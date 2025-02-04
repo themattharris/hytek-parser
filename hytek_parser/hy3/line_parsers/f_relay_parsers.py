@@ -100,7 +100,7 @@ def f2_parser(
     if WithTimeTimeCode.is_dq_code(time_code):
         # Get the DQ code
         dq_code = select_from_enum(DisqualificationCode, extract(line, 14, 2))
-        dq_info = DisqualificationInfo(dq_code, None)
+        dq_info = {dq_code.value: DisqualificationInfo(dq_code, None)}
 
     heat = safe_cast(int, extract(line, 21, 3))
     lane = safe_cast(int, extract(line, 24, 3))
