@@ -7,14 +7,14 @@ from hytek_parser._utils import validate_checksum, calculate_checksum
 
 
 def parse_hy3(
-    file: StrOrBytesPath, validate_checksums: bool = False, default_country: str = "USA"
+    file: StrOrBytesPath, validate_checksums: bool = False, default_country: str = "US"
 ) -> ParsedHytekFile:
     """Parse a Hytek MeetManager .hy3 file.
 
     Args:
         file (StrOrBytesPath): A path to the file to parse.
         validate_checksums (bool, optional): Validate line checksums. Defaults to False.
-        default_country (str, optional): Default country for meet. Defaults to "USA".
+        default_country (str, optional): Default country for meet in ISO 3166-1 Alpha-2. Defaults to "US".
 
     Returns:
         ParsedHytekFile: The parsed file.
