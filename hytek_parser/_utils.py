@@ -1,5 +1,5 @@
 from typing import Any, Optional, Type, TypeVar
-
+from hytek_parser._exceptions import ChecksumError, MalformedChecksumError
 
 def extract(string: str, start: int, len_: int) -> str:
     """Extract a section of a certain length from a string.
@@ -140,3 +140,62 @@ def int_or_none(value:str|None) -> int|None:
     Returns:
         int|None: Either the parsed int value or None"""
     return int(value) if value and value.isdigit() else None
+
+
+def calculate_checksum(line:str) -> int:
+    """Calculates the checksum for a given line.
+
+    Args:
+        line (str): The line from the .hy3 file.
+
+    Returns:
+        str: The calculated two-digit checksum.
+
+    Example:
+        >>> checksum = calculate_checksum("Z0")
+        >>> print(checksum)
+        07
+    """
+    line = line[:-2]  # Remove last two checksum characters
+
+    # Compute ASCII values
+    ord_chars = [ord(char) for char in line]
+
+    # Split into odd/even indexed values
+    odd_sum = sum(2 * ord_chars[i] for i in range(1, len(ord_chars), 2))
+    even_sum = sum(ord_chars[i] for i in range(0, len(ord_chars), 2))
+
+    # Compute checksum values
+    sum_val = odd_sum + even_sum
+    sum2 = (sum_val // 21) + 205
+
+    # Extract last two digits
+    checksum1 = sum2 % 10
+    checksum2 = (sum2 // 10) % 10
+
+    return f"{checksum1}{checksum2}"
+
+def validate_checksum(line:str) -> bool:
+    """Validates the checksum of a given line.
+
+    Args:
+        line (str): The line from the .hy3 file.
+
+    Raises:
+        MalformedChecksumError: If the checksum is missing or malformed.
+        ChecksumError: If the checksum is invalid.
+    """
+    if len(line) < 2:
+        raise MalformedChecksumError(line)
+
+    actual_checksum = line[-2:]
+
+    # Ensure the checksum consists of two digits
+    if not actual_checksum.isdigit():
+        raise MalformedChecksumError(line)
+
+    expected_checksum = calculate_checksum(line)
+
+    if actual_checksum != expected_checksum:
+        raise ChecksumError(line, expected_checksum, actual_checksum)
+    return True

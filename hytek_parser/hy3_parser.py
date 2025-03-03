@@ -3,6 +3,7 @@ from typing import Any
 from hytek_parser.hy3 import HY3_LINE_PARSERS
 from hytek_parser.hy3.schemas import ParsedHytekFile
 from hytek_parser.types import StrOrBytesPath
+from hytek_parser._utils import validate_checksum, calculate_checksum
 
 
 def parse_hy3(
@@ -18,9 +19,6 @@ def parse_hy3(
     Returns:
         ParsedHytekFile: The parsed file.
     """
-    # TODO: Implement checksum validation
-    if validate_checksums:
-        raise NotImplementedError("Checksum validation is not implement yet.")
 
     # Set options dict
     opts: dict[str, Any] = {
@@ -38,7 +36,9 @@ def parse_hy3(
 
     # Add terminator to file
     if lines[-1][0:2] != "Z0":
-        lines.append("Z0")
+        terminator_line = "Z0".ljust(128, " ")  # Ensure correct padding
+        checksum = calculate_checksum(terminator_line + "00") # add placeholder checksum
+        lines.append(terminator_line + checksum)
 
     # Start parsing
     parsed_file = ParsedHytekFile()
@@ -46,6 +46,9 @@ def parse_hy3(
     warnings = 0
     errors = 0
     for line in lines:
+        if validate_checksums:
+            validate_checksum(line)
+
         code = line[0:2]
 
         if code == "Z0":
