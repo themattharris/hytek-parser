@@ -14,6 +14,7 @@ def c1_parser(
     # Get team info
     team_name = extract(line, 8, 30)
     team_short_name = extract(line, 38, 16)
+    team_lsc = extract(line, 54, 2)
 
     if raw_team_code := extract(line, 3, 5):
         # Team code exists
@@ -27,7 +28,7 @@ def c1_parser(
         team_code = "".join(TEAM_CODE_REGEX.findall(team_name.upper()))[:5]
 
     file.meet.get_or_create_team(
-        name=team_name, short_name=team_short_name, code=team_code
+        name=team_name, short_name=team_short_name, code=team_code, lsc=team_lsc
     )
     return file
 
@@ -39,7 +40,8 @@ def c2_parser(
     # Get the last team
     team_code, team = file.meet.last_team
 
-    team.address_1 = extract(line, 3, 60)
+    team.address_1 = extract(line, 3, 30)
+    team.address_2 = extract(line, 33, 30)
     team.city = extract(line, 63, 30)
     team.state = extract(line, 93, 2)
     team.zip_code = extract(line, 95, 10)

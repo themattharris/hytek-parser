@@ -12,6 +12,7 @@ from hytek_parser.hy3.enums import (
     ReplacedTimeTimeCode,
     Stroke,
     WithTimeTimeCode,
+    FileCode
 )
 
 
@@ -45,6 +46,7 @@ class Team:
     name: str
     short_name: str
     code: str
+    lsc: str
 
     # Location
     address_1: str
@@ -248,6 +250,8 @@ class Meet:
     facility: str
     start_date: date
     end_date: date
+    ageup_date: date
+
     altitude: int|None
     country: str
 
@@ -269,7 +273,7 @@ class Meet:
         self.teams = dict()
         self.swimmers = dict()
         self.events = dict()
-        
+
         super(Meet, self).__init__()
 
     def add_swimmer(self, swimmer: Swimmer) -> None:
@@ -388,6 +392,7 @@ class ParsedHytekFile:
     """Represents a parsed Hytek file."""
 
     # File info
+    file_code: FileCode
     file_description: str
     software: Software
     date_created: datetime

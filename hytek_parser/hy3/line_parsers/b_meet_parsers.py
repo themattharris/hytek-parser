@@ -16,6 +16,7 @@ def b1_parser(
     meet.facility = extract(line, 48, 45)
     meet.start_date = datetime.strptime(extract(line, 93, 8), "%m%d%Y").date()
     meet.end_date = datetime.strptime(extract(line, 101, 8), "%m%d%Y").date()
+    meet.ageup_date = datetime.strptime(extract(line, 109, 8), "%m%d%Y").date()
     meet.altitude = int_or_none(extract(line, 117, 5))
     # TODO: Find meet country
     meet.country = opts["default_country"]

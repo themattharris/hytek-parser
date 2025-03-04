@@ -228,3 +228,13 @@ class ResultType(Enum):
     FINAL = "F"
     SWIMOFF = "S"
     UNKNOWN = "U"
+
+
+class FileCode(Enum):
+    """File codes for Hytek files."""
+
+    _settings_ = Unique
+
+    MEET_ENTRIES = "02"
+    TEAM_ROSTER = "03"
+    MEET_RESULTS = "07"

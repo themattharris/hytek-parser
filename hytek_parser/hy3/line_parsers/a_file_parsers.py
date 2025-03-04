@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import Any
 
-from hytek_parser._utils import extract
+from hytek_parser._utils import extract, select_from_enum
+from hytek_parser.hy3.enums import FileCode
 from hytek_parser.hy3.schemas import ParsedHytekFile, Software
 
 
@@ -9,6 +10,7 @@ def a1_parser(
     line: str, file: ParsedHytekFile, opts: dict[str, Any]
 ) -> ParsedHytekFile:
     """Parse an A1 line with file info."""
+    file.file_code = select_from_enum(FileCode, extract(line, 2, 2))
     file.file_description = extract(line, 5, 25)
     file.software = Software(extract(line, 30, 15), extract(line, 45, 10))
 
